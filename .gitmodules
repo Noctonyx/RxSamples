@@ -16,9 +16,6 @@
 [submodule "extern/freetype"]
 	path = extern/freetype
 	url = https://github.com/shanehyde/freetype
-[submodule "extern/dxmath"]
-	path = extern/dxmath
-	url = https://github.com/shanehyde/freetype
 [submodule "extern/RmlUi"]
 	path = extern/RmlUi
 	url = https://github.com/Noctonyx/RmlUi.git
@@ -40,3 +37,6 @@
 [submodule "extern/bitsery"]
 	path = extern/bitsery
 	url = https://github.com/fraillt/bitsery
+[submodule "extern/dxmath"]
+	path = extern/dxmath
+	url = https://github.com/microsoft/DirectXMath.git
