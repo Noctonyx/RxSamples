@@ -1,9 +1,3 @@
 [submodule "RxCore"]
 	path = RxCore
 	url = https://github.com/Noctonyx/RxCore.git
-[submodule "RxECS"]
-	path = RxECS
-	url = https://github.com/Noctonyx/RxCore.git
-[submodule "RxEngine"]
-	path = RxEngine
-	url = https://github.com/Noctonyx/RxCore.git
