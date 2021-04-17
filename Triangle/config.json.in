@@ -1,0 +1,8 @@
+{
+    "mounts": [
+      {
+        "path": "@RXSAMPLES_ASSET_PATH@",
+        "mount": "/"
+      }
+    ]
+}

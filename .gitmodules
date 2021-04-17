@@ -40,3 +40,9 @@
 [submodule "extern/dxmath"]
 	path = extern/dxmath
 	url = https://github.com/microsoft/DirectXMath.git
+[submodule "RxAssets"]
+	path = RxAssets
+	url = https://github.com/Noctonyx/RxAssets.git
+[submodule "RxUtil"]
+	path = RxUtil
+	url = https://github.com/Noctonyx/RxUtil.git
