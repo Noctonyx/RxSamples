@@ -13,7 +13,7 @@ endif ()
 
 target_include_directories(Triangle PRIVATE "src")
 
-target_link_libraries(Triangle PRIVATE glfw)
+#target_link_libraries(Triangle PRIVATE glfw)
 target_link_libraries(Triangle PRIVATE RxEngine)
 target_link_libraries(Triangle PRIVATE RxAssets)
 
