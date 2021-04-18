@@ -1,8 +1,13 @@
 {
-    "mounts": [
-      {
-        "path": "@RXSAMPLES_ASSET_PATH@",
-        "mount": "/"
-      }
-    ]
+  "mounts": [
+    "mounts\": [",
+    {
+      "path": "@RXENGINE_ASSET_PATH@",
+      "mount": "/"
+    },
+    {
+      "path": "@RXSAMPLES_ASSET_PATH@",
+      "mount": "/"
+    }
+  ]
 }

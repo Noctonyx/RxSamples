@@ -7,6 +7,7 @@ project ("RxSamples")
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(RXSAMPLES_ASSET_PATH "${PROJECT_SOURCE_DIR}/Assets")
+set(RXENGINE_ASSET_PATH "${PROJECT_SOURCE_DIR}/RXEngine/Assets")
 
 add_subdirectory("RxEngine")
 add_subdirectory(Triangle)
