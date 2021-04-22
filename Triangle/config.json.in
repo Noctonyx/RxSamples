@@ -1,6 +1,5 @@
 {
   "mounts": [
-    "mounts\": [",
     {
       "path": "@RXENGINE_ASSET_PATH@",
       "mount": "/"
