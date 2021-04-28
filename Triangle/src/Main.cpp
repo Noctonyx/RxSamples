@@ -42,25 +42,18 @@ int main()
 {
     try {
         std::unique_ptr<RxEngine::EngineMain> engine_;
-        //std::unique_ptr<RxEngine::World> world_;
-
-        //ecs_tracing_enable(4);
 
         spdlog::info("Starting Triangle WIP");
-        spdlog::set_level(spdlog::level::debug);
+        spdlog::set_level(spdlog::level::info);
 
         loadAssetList();
 
         engine_ = std::make_unique<RxEngine::EngineMain>();
-        //world_ = std::make_unique<RxEngine::World>(engine_.get());
-        //engine_->setWorld(world_.get());
-
-        //world_->registerBaseModules();
-        //world_->registerModule<Land>();
+        engine_->addInitConfigFile("/lua/startup.lua");
         engine_->startup();
-        //engine_->setActiveScene(std::make_shared<TestScene>(engine_.get(), engine_->getWindow()));
+
         engine_->run();
-        //world_.reset();
+
         engine_.reset();
 
     }
