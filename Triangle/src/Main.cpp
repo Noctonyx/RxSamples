@@ -52,6 +52,10 @@ int main()
         engine_->addInitConfigFile("/lua/startup.lua");
         engine_->startup();
 
+        auto w = engine_->getWorld();
+
+        w->instantiate(w->lookup("PrefabRTSCamera").id).set<ecs::Name>({"Main Camera"});
+
         engine_->run();
 
         engine_.reset();
