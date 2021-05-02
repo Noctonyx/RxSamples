@@ -12,8 +12,11 @@
 
 #include "nlohmann/json.hpp"
 #include "Vfs.h"
+#include "Modules/RTSCamera/RTSCamera.h"
+#include "Modules/Transforms/Transforms.h"
 
-void loadAssetList() {
+void loadAssetList()
+{
     std::ifstream f("config.json");
     nlohmann::json js;
     f >> js;
@@ -25,7 +28,7 @@ void loadAssetList() {
 
     if (js["mounts"].is_array()) {
         nlohmann::json j2 = js["mounts"];
-        for (auto& j3 : j2) {
+        for (auto & j3: j2) {
             if (j3.is_object()) {
                 auto path = j3["path"].get<std::string>();
                 auto mount = j3["mount"].get<std::string>();
@@ -54,14 +57,18 @@ int main()
 
         auto w = engine_->getWorld();
 
-        w->instantiate(w->lookup("PrefabRTSCamera").id).set<ecs::Name>({"Main Camera"});
+        auto e = w->instantiate(w->lookup("PrefabRTSCamera").id)
+            .set<ecs::Name>({ "Main Camera" })
+            .set<RxEngine::Transforms::WorldPosition>({ {0.0f, 0.0f, 5.0f} });
+
+        auto r = e.getUpdate<RxEngine::RTSCamera>();
+        r->dolly = 20.f;
 
         engine_->run();
 
         engine_.reset();
 
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception & e) {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
