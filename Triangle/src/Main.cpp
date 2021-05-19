@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <filesystem>
+#include <random>
+
 #include "Window.hpp"
 #include "RxECS.h"
 #include "EngineMain.hpp"
@@ -12,8 +14,17 @@
 
 #include "nlohmann/json.hpp"
 #include "Vfs.h"
+#include "Modules/Prototypes/Prototypes.h"
 #include "Modules/RTSCamera/RTSCamera.h"
+#include "Modules/SceneCamera/SceneCamera.h"
 #include "Modules/Transforms/Transforms.h"
+#include "Modules/WorldObject/WorldObject.h"
+
+
+struct YRotateSpeed
+{
+    float s;
+};
 
 void loadAssetList()
 {
@@ -57,12 +68,50 @@ int main()
 
         auto w = engine_->getWorld();
 
-        auto e = w->instantiate(w->lookup("PrefabRTSCamera").id)
-            .set<ecs::Name>({ "Main Camera" })
-            .set<RxEngine::Transforms::WorldPosition>({ {0.0f, 0.0f, 5.0f} });
+        auto e = w->lookup("PrefabRTSCamera")
+                  .instantiate("Main Camera")
+                  .set<RxEngine::Transforms::WorldPosition>({{0.0f, 1.1f, 5.0f}});
 
         auto r = e.getUpdate<RxEngine::RTSCamera>();
-        r->dolly = 20.f;
+        r->dolly = 10.f;
+
+        auto sc = w->getSingletonUpdate<RxEngine::SceneCamera>();
+        sc->camera = e.id;
+
+        auto prefab = w->lookup("prototype/testcube");
+
+        int size = 70;
+
+        std::random_device rd; //Will be used to obtain a seed for the random number engine
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution distrib(-8.f, 8.0f);
+
+        for (int32_t i = -size; i < size; i++) {
+            for (int32_t j = -size; j < size; j++) {
+                auto e = prefab.instantiate().add<RxEngine::WorldObject>();
+                e.set<RxEngine::Transforms::WorldPosition>({{i * 3.0f, 0.0f, j * 3.0f}});
+                e.set<YRotateSpeed>({distrib(gen)});
+            }
+        }
+        w->createSystem("Main:Rotate").inGroup("Pipeline:FixedUpdate")
+         .withQuery<YRotateSpeed, RxEngine::Transforms::LocalRotation>()        
+         .each<YRotateSpeed, RxEngine::Transforms::LocalRotation>([](
+             ecs::EntityHandle e,
+             const YRotateSpeed * rs,
+             RxEngine::Transforms::LocalRotation * lr)
+             {
+                 auto delta = e.world->deltaTime();
+                 //lr->rotation.y = std::clamp(lr->rotation.y + rs->s * delta, -360.f, 360.f);
+                 lr->rotation.y = lr->rotation.y + rs->s * delta;
+             });
+        // w->lookup("prototype/testcube").instantiate("My Cube").add<RxEngine::WorldObject>();// .remove<RxEngine::VisiblePrototype>();
+
+
+        //        w->newEntity("My Cube")
+        //.set<ecs::InstanceOf>({{w->lookup("testcube").id}})
+        //         .add<RxEngine::Transforms::WorldPosition>()
+        //.add<RxEngine::Transforms::YRotation>()
+        //.add<RxEngine::WorldObject>();
 
         engine_->run();
 
