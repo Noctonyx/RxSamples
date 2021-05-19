@@ -91,6 +91,7 @@ int main()
                 auto e = prefab.instantiate().add<RxEngine::WorldObject>();
                 e.set<RxEngine::Transforms::WorldPosition>({{i * 3.0f, 0.0f, j * 3.0f}});
                 e.set<YRotateSpeed>({distrib(gen)});
+               // e.setSwitch<RxEngine::DirtyTransform>(1);
             }
         }
         w->createSystem("Main:Rotate").inGroup("Pipeline:FixedUpdate")
@@ -101,6 +102,7 @@ int main()
              RxEngine::Transforms::LocalRotation * lr)
              {
                  auto delta = e.world->deltaTime();
+                // e.setSwitch<RxEngine::DirtyTransform>(1);
                  //lr->rotation.y = std::clamp(lr->rotation.y + rs->s * delta, -360.f, 360.f);
                  lr->rotation.y = lr->rotation.y + rs->s * delta;
              });
