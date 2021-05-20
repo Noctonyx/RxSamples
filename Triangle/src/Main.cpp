@@ -88,9 +88,9 @@ int main()
 
         for (int32_t i = -size; i < size; i++) {
             for (int32_t j = -size; j < size; j++) {
-                auto e = prefab.instantiate().add<RxEngine::WorldObject>();
-                e.set<RxEngine::Transforms::WorldPosition>({{i * 3.0f, 0.0f, j * 3.0f}});
-                e.set<YRotateSpeed>({distrib(gen)});
+                auto e1 = prefab.instantiate().add<RxEngine::WorldObject>();
+                e1.set<RxEngine::Transforms::WorldPosition>({{i * 3.0f, 0.0f, j * 3.0f}});
+                e1.set<YRotateSpeed>({distrib(gen)});
                // e.setSwitch<RxEngine::DirtyTransform>(1);
             }
         }
