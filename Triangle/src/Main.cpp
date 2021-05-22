@@ -7,14 +7,13 @@
 #include <filesystem>
 #include <random>
 
-#include "Window.hpp"
 #include "RxECS.h"
 #include "EngineMain.hpp"
 #include "Log.h"
 
 #include "nlohmann/json.hpp"
 #include "Vfs.h"
-#include "Modules/Prototypes/Prototypes.h"
+#include "Modules/CameraControl/CameraControl.h"
 #include "Modules/RTSCamera/RTSCamera.h"
 #include "Modules/SceneCamera/SceneCamera.h"
 #include "Modules/Transforms/Transforms.h"
@@ -66,21 +65,25 @@ int main()
         engine_->addInitConfigFile("/lua/startup.lua");
         engine_->startup();
 
-        auto w = engine_->getWorld();
+        auto world = engine_->getWorld();
 
-        auto e = w->lookup("PrefabRTSCamera")
-                  .instantiate("Main Camera")
-                  .set<RxEngine::Transforms::WorldPosition>({{0.0f, 1.1f, 5.0f}});
+        engine_->addUserModule(std::make_shared<CameraControlModule>(world, engine_.get()));
+
+        engine_->loadModules();
+
+        auto e = world->lookup("PrefabRTSCamera")
+                      .instantiate("Main Camera")
+                      .set<RxEngine::Transforms::WorldPosition>({{0.0f, 1.1f, 5.0f}});
 
         auto r = e.getUpdate<RxEngine::RTSCamera>();
         r->dolly = 10.f;
 
-        auto sc = w->getSingletonUpdate<RxEngine::SceneCamera>();
+        auto sc = world->getSingletonUpdate<RxEngine::SceneCamera>();
         sc->camera = e.id;
 
-        auto prefab = w->lookup("prototype/testcube");
+        auto prefab = world->lookup("prototype/testcube");
 
-        int size = 70;
+        int size = 50;
 
         std::random_device rd; //Will be used to obtain a seed for the random number engine
         std::mt19937 gen(rd());
@@ -91,29 +94,21 @@ int main()
                 auto e1 = prefab.instantiate().add<RxEngine::WorldObject>();
                 e1.set<RxEngine::Transforms::WorldPosition>({{i * 3.0f, 0.0f, j * 3.0f}});
                 e1.set<YRotateSpeed>({distrib(gen)});
-               // e.setSwitch<RxEngine::DirtyTransform>(1);
             }
         }
-        w->createSystem("Main:Rotate").inGroup("Pipeline:FixedUpdate")
-         .withQuery<YRotateSpeed, RxEngine::Transforms::LocalRotation>()        
-         .each<YRotateSpeed, RxEngine::Transforms::LocalRotation>([](
-             ecs::EntityHandle e,
-             const YRotateSpeed * rs,
-             RxEngine::Transforms::LocalRotation * lr)
-             {
-                 auto delta = e.world->deltaTime();
-                // e.setSwitch<RxEngine::DirtyTransform>(1);
-                 //lr->rotation.y = std::clamp(lr->rotation.y + rs->s * delta, -360.f, 360.f);
-                 lr->rotation.y = lr->rotation.y + rs->s * delta;
-             });
-        // w->lookup("prototype/testcube").instantiate("My Cube").add<RxEngine::WorldObject>();// .remove<RxEngine::VisiblePrototype>();
 
-
-        //        w->newEntity("My Cube")
-        //.set<ecs::InstanceOf>({{w->lookup("testcube").id}})
-        //         .add<RxEngine::Transforms::WorldPosition>()
-        //.add<RxEngine::Transforms::YRotation>()
-        //.add<RxEngine::WorldObject>();
+        world->createSystem("Main:Rotate")
+             .inGroup("Pipeline:FixedUpdate")
+             .withQuery<YRotateSpeed, RxEngine::Transforms::LocalRotation>()
+             .each<YRotateSpeed, RxEngine::Transforms::LocalRotation>(
+                 [](ecs::EntityHandle e,
+                    const YRotateSpeed * rs,
+                    RxEngine::Transforms::LocalRotation * lr)
+                 {
+                     auto delta = e.world->deltaTime();
+                     lr->rotation.y = lr->rotation.y + rs->s * delta;
+                 }
+             );
 
         engine_->run();
 

@@ -26,6 +26,9 @@ cmake-build*/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/
+
+.vscode/
 
 # Gradle
 .idea/**/gradle.xml

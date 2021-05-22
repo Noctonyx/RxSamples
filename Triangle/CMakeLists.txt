@@ -5,7 +5,9 @@ cmake_minimum_required (VERSION 3.8)
 
 add_executable (Triangle  
     src/Main.cpp 
-)
+ "src/Modules/CameraControl/CameraControl.cpp" 
+ "src/Modules/CameraControl/CameraControl.h"
+ )
 
 if (MSVC)
     target_compile_options(Triangle PRIVATE /W4 /WX)
