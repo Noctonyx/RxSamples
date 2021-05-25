@@ -83,7 +83,7 @@ int main()
 
         auto prefab = world->lookup("prototype/testcube");
 
-        int size = 50;
+        int size = 30;
 
         std::random_device rd; //Will be used to obtain a seed for the random number engine
         std::mt19937 gen(rd());
@@ -100,6 +100,7 @@ int main()
         world->createSystem("Main:Rotate")
              .inGroup("Pipeline:FixedUpdate")
              .withQuery<YRotateSpeed, RxEngine::Transforms::LocalRotation>()
+             .withJob()
              .each<YRotateSpeed, RxEngine::Transforms::LocalRotation>(
                  [](ecs::EntityHandle e,
                     const YRotateSpeed * rs,
